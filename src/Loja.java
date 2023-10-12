@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class Loja extends JFrame {
     private JSONObject session;
@@ -118,6 +119,9 @@ public class Loja extends JFrame {
 
             for (int i = 0; i < gameListingsArray.length(); i++) {
                 JSONObject listingObject = gameListingsArray.getJSONObject(i);
+                if ((session.getJSONArray("biblioteca").toList().contains(listingObject.getString("name")))) {
+                    continue;
+                }
                 String imagePath = listingObject.getString("directory");
                 String name = listingObject.getString("name");
 

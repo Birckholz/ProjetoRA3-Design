@@ -4,11 +4,56 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class GameSpecificGUI extends JFrame {
-    public GameSpecificGUI(JSONObject gameDetails) {
+    public GameSpecificGUI(JSONObject gameDetails ,JSONObject session) {
+
+        JMenuBar barraMenu = new JMenuBar();
+        JMenu menuBiblioteca = new JMenu("Biblioteca");
+        JMenu menuLoja = new JMenu("Loja");
+        JMenu menuPerfil = new JMenu("Perfil");
+
+        JMenuItem verJogos = new JMenuItem("Ver Jogos");
+        verJogos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new Biblioteca(session).setVisible(true);
+            }
+        });
+
+        JMenuItem verLoja = new JMenuItem("Ver Loja");
+        verLoja.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new Loja(session).setVisible(true);
+            }
+        });
+
+        JMenuItem verPerfil = new JMenuItem("Ver Perfil");
+        verPerfil.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new Perfil(session).setVisible(true);
+            }
+        });
+
+        menuPerfil.add(verPerfil);
+        menuBiblioteca.add(verJogos);
+        menuLoja.add(verLoja);
+
+        barraMenu.add(menuPerfil);
+        barraMenu.add(menuBiblioteca);
+        barraMenu.add(menuLoja);
+
+
+        setJMenuBar(barraMenu);
+        setVisible(true);
+        setLocationRelativeTo(null);
+
         String imagePath = gameDetails.getString("directory");
         String name = gameDetails.getString("name");
         String description = gameDetails.getString("description");

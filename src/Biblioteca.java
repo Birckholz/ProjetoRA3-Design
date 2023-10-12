@@ -140,7 +140,8 @@ public class Biblioteca extends JFrame {
                             imageLabel.addMouseListener(new MouseAdapter() {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
-                                    new GameSpecificGUI(listingObject);
+                                    new GameSpecificGUI(listingObject, session);
+                                    descartar();
                                 }
                             });
                         }
