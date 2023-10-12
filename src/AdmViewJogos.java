@@ -144,13 +144,13 @@ public class AdmViewJogos extends JFrame {
             Vector<String> columnNames = new Vector<>();
             columnNames.add("Name");
             columnNames.add("Description");
-            columnNames.add("Price");
+            columnNames.add("APrice");
             columnNames.add("Directory");
             columnNames.add("Deletar");
             tableModel = new DefaultTableModel(columnNames, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return column != 0 && column != 1 && column != 2;
+                    return column == 4;
                 }
             };
 
@@ -270,7 +270,7 @@ public class AdmViewJogos extends JFrame {
                 jsonArray.put(jsonObject);
             }
             try {
-                Files.write(Paths.get("src/games.json"), jsonArray.toString().getBytes());
+                Files.write(Paths.get("src/games.json"), jsonArray.toString(2).getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }

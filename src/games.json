@@ -1,1 +1,20 @@
-[{"name":"Game","description":"This game","aprice":20.2,"directory":"image/img_1.png"},{"name":"Moke","description":"Maccac","aprice":12,"directory":"image/monke.jpg"},{"name":"Snake","description":"sanke","directory":"image/img_3.png","aprice":12}]
+[
+  {
+    "name": "Game",
+    "description": "This game",
+    "aprice": 20.2,
+    "directory": "image/img_1.png"
+  },
+  {
+    "name": "Moke",
+    "description": "Maccac",
+    "aprice": 12,
+    "directory": "image/monke.jpg"
+  },
+  {
+    "name": "Snake",
+    "description": "sanke",
+    "directory": "image/img_3.png",
+    "aprice": 12
+  }
+]

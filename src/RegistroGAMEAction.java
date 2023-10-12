@@ -14,7 +14,7 @@ public class RegistroGAMEAction {
         jsonObject.put("directory", game.getDirectory());
         jsonObject.put("name", game.getName());
         jsonObject.put("description", game.getDescricao());
-        jsonObject.put("price", game.getPrice());
+        jsonObject.put("aprice", game.getPrice());
 
         String filePath = "src/games.json";
 

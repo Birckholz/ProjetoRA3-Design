@@ -1,1 +1,62 @@
-[{"senha":"12345","biblioteca":["Game"],"name":"A","email":"Luiz@gmail.com","username":"Luizes"},{"senha":"admin","name":"admin","admin":true,"email":"luizgamer@gmail.com","username":"admin"},{"senha":"gamer","biblioteca":["Game"],"imagePath":"image/joaogamer.jpg","name":"joao","email":"joao@gmail.com","username":"joaogamer"},{"senha":"1234567","biblioteca":["Game","Moke","Comprar","snake","Snake"],"imagePath":"image/Car2.jpg","name":"Carlos123","email":"Carlos@gmail.com","username":"Car2"},{"senha":"12345","biblioteca":[],"imagePath":"","name":"j","email":"h@gmail.com","username":"ha"},{"senha":"123","biblioteca":["Moke","Snake"],"imagePath":"image/zé.jpg","name":"zé da manga","email":"ze@gmail.com","username":"zé"}]
+[
+  {
+    "senha": "12345",
+    "biblioteca": [
+      "Game"
+    ],
+    "name": "A",
+    "email": "Luiz@gmail.com",
+    "username": "Luizes"
+  },
+  {
+    "senha": "admin",
+    "name": "admin",
+    "biblioteca": [],
+    "admin": true,
+    "email": "luizgamer@gmail.com",
+    "username": "admin"
+  },
+  {
+    "senha": "gamer",
+    "biblioteca": [
+      "Game"
+    ],
+    "imagePath": "image/joaogamer.jpg",
+    "name": "joao",
+    "email": "joao@gmail.com",
+    "username": "joaogamer"
+  },
+  {
+    "senha": "1234567",
+    "biblioteca": [
+      "Game",
+      "Moke",
+      "Comprar",
+      "snake",
+      "Snake"
+    ],
+    "imagePath": "image/Car2.jpg",
+    "name": "Carlos123",
+    "email": "Carlos@gmail.com",
+    "username": "Car2"
+  },
+  {
+    "senha": "12345",
+    "biblioteca": [],
+    "imagePath": "",
+    "name": "j",
+    "email": "h@gmail.com",
+    "username": "ha"
+  },
+  {
+    "senha": "123",
+    "biblioteca": [
+      "Moke",
+      "Snake"
+    ],
+    "imagePath": "image/zé.jpg",
+    "name": "zé da manga",
+    "email": "ze@gmail.com",
+    "username": "zé"
+  }
+]

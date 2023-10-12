@@ -139,21 +139,32 @@ public class AdmViewUser extends JFrame {
             columnNames.add("Name");
             columnNames.add("Email");
             columnNames.add("Username");
+            columnNames.add("Senha");
+            columnNames.add("Biblioteca");
+            columnNames.add("imagePath");
             columnNames.add("Deletar");
             tableModel = new DefaultTableModel(columnNames, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return column != 0 && column != 1 && column != 2;
+                    return column == 6;
                 }
             };
 
             // Populate table model with data
             for (int i = 0; i < jsonArray.length(); i++) {
+                String imagePath = "";
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("name");
                 String email = jsonObject.getString("email");
                 String username = jsonObject.getString("username");
-                tableModel.addRow(new Object[]{name, email, username, "Deletar"});
+                String senha = jsonObject.getString("senha");
+                JSONArray biblioteca = jsonObject.getJSONArray("biblioteca");
+                if (jsonObject.has("imagePath")) {
+                    imagePath = jsonObject.getString("imagePath");
+                } else {
+                    imagePath = "Nenhuma";
+                }
+                tableModel.addRow(new Object[]{name, email, username, senha, biblioteca, imagePath, "Deletar"});
             }
 
             // Set the table model
@@ -203,7 +214,7 @@ public class AdmViewUser extends JFrame {
         private JButton button;
         private String label;
         private boolean clicked;
-
+        private int selectedRow;
         public ButtonEditor(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton();
@@ -226,16 +237,15 @@ public class AdmViewUser extends JFrame {
             label = (value == null) ? "" : value.toString();
             button.setText(label);
             clicked = true;
+            selectedRow = row;
             return button;
         }
 
         public Object getCellEditorValue() {
             if (clicked) {
-                // Perform deletar action
                 int confirm = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Confirmar Deletar", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    // Delete the row from the table model
-                    tableModel.removeRow(table.getSelectedRow());
+                    tableModel.removeRow(selectedRow);
                     writeTableDataToJson();
                     }
                 }
@@ -243,17 +253,21 @@ public class AdmViewUser extends JFrame {
                 return new String(label);
             }
             private void writeTableDataToJson() {
-                // Write the updated data back to the JSON file
                 JSONArray jsonArray = new JSONArray();
                 for (int i = 0; i < tableModel.getRowCount(); i++) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("name", tableModel.getValueAt(i, 0));
-                    jsonObject.put("description", tableModel.getValueAt(i, 1));
-                    jsonObject.put("price", tableModel.getValueAt(i, 2));
+                    jsonObject.put("email", tableModel.getValueAt(i, 1));
+                    jsonObject.put("username", tableModel.getValueAt(i, 2));
+                    jsonObject.put("senha", tableModel.getValueAt(i, 3));
+                    jsonObject.put("biblioteca", tableModel.getValueAt(i, 4));
+                    if (!(table.getValueAt(i, 5).equals("Nenhuma"))) {
+                        jsonObject.put("imagePath", tableModel.getValueAt(i, 5));
+                    }
                     jsonArray.put(jsonObject);
                 }
                 try {
-                    Files.write(Paths.get("src/games.json"), jsonArray.toString().getBytes());
+                    Files.write(Paths.get("src/usuarios.json"), jsonArray.toString().getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -267,5 +281,14 @@ public class AdmViewUser extends JFrame {
         protected void fireEditingStopped() {
             super.fireEditingStopped();
         }
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JSONObject session = new JSONObject();
+                session.put("name", "admin");
+                new AdmViewUser(session);
+            }
+        });
     }
 }
