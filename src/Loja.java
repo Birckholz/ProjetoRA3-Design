@@ -29,22 +29,17 @@ public class Loja extends JFrame {
 
             optionPane.setOptions(new Object[]{customButton});
 
-            // Create a dialog with the option pane
             JDialog dialog = optionPane.createDialog("No Session");
 
-            // Add an action listener to the custom button
             customButton.addActionListener(e -> {
                 descartar();
                 dialog.dispose();
             });
 
-            // Set the dialog to be modal
             dialog.setModal(true);
 
-            // Set the dialog to be non-resizable
             dialog.setResizable(false);
 
-            // Display the dialog
             dialog.setVisible(true);
         }
 
@@ -90,18 +85,15 @@ public class Loja extends JFrame {
 
                 contentPanel.add(BorderLayout.NORTH, barraMenu);
 
-                // Create a container panel for the game panels
                 gamePanelContainer = new JPanel(new GridLayout(0, 3, 10, 10));
                 gamePanelContainer.setBackground(Color.DARK_GRAY); // Set background color to dark gray
 
-                // Add the game panel container to a JScrollPane for scrolling
                 JScrollPane scrollPane = new JScrollPane(gamePanelContainer);
                 scrollPane.setBackground(Color.DARK_GRAY);
                 scrollPane.getViewport().setBackground(Color.DARK_GRAY);
                 scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                 scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-                // Add the scroll pane to the content panel
                 contentPanel.add(BorderLayout.CENTER, scrollPane);
 
                 getContentPane().setLayout(new BorderLayout());
@@ -130,41 +122,33 @@ public class Loja extends JFrame {
                 String name = listingObject.getString("name");
 
 
-                // Load the image from the file
                 ImageIcon imageIcon = new ImageIcon(imagePath);
                 Image image = imageIcon.getImage();
                 Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
                 ImageIcon scaledImageIcon = new ImageIcon(scaledImage);
 
-                // Create a panel to hold the image, name, and button for each game
                 JPanel gamePanel = new JPanel();
                 gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
                 gamePanel.setBackground(Color.DARK_GRAY); // Set background color to dark gray
 
-                // Create a JLabel to display the image
                 JLabel imageLabel = new JLabel();
                 imageLabel.setIcon(scaledImageIcon);
                 gamePanel.add(imageLabel);
 
-                // Create a panel to hold the name and button
                 JPanel nameButtonPanel = new JPanel();
                 nameButtonPanel.setLayout(new BoxLayout(nameButtonPanel, BoxLayout.Y_AXIS));
                 nameButtonPanel.setBackground(Color.DARK_GRAY); // Set background color to dark gray
-
-                // Create a JLabel to display the name
                 JLabel nameLabel = new JLabel(name);
                 nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 nameLabel.setForeground(Color.WHITE); // Set text color to white
                 nameButtonPanel.add(nameLabel);
 
-                // Create a button
                 JButton pagarButton = new JButton("Comprar");
                 pagarButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                 nameButtonPanel.add(pagarButton);
 
                 gamePanel.add(nameButtonPanel);
 
-                // Add the game panel to the game panel container
                 gamePanelContainer.add(gamePanel);
 
                 pagarButton.addMouseListener(new MouseAdapter() {

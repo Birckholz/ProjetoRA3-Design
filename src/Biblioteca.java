@@ -27,22 +27,17 @@ public class Biblioteca extends JFrame {
 
             optionPane.setOptions(new Object[] { customButton });
 
-            // Create a dialog with the option pane
             JDialog dialog = optionPane.createDialog("No Session");
 
-            // Add an action listener to the custom button
             customButton.addActionListener(e -> {
                 descartar();
                 dialog.dispose();
             });
 
-            // Set the dialog to be modal
             dialog.setModal(true);
 
-            // Set the dialog to be non-resizable
             dialog.setResizable(false);
 
-            // Display the dialog
             dialog.setVisible(true);
         } else {
             try {
@@ -97,11 +92,9 @@ public class Biblioteca extends JFrame {
             String fileContent = new String(Files.readAllBytes(Paths.get(filePath)));
             JSONArray gameListingsArray = new JSONArray(fileContent);
 
-            // Initialize the game panel container with a grid layout
             gamePanelContainer = new JPanel(new GridLayout(0, 3, 10, 10));
             gamePanelContainer.setBackground(Color.DARK_GRAY);
 
-            // Add an empty filler panel for padding on the left side
             JPanel fillerPanel = new JPanel();
             fillerPanel.setOpaque(false);
             gamePanelContainer.add(fillerPanel);
@@ -147,7 +140,7 @@ public class Biblioteca extends JFrame {
                             imageLabel.addMouseListener(new MouseAdapter() {
                                 @Override
                                 public void mouseClicked(MouseEvent e) {
-                                    // Handle the image click event here
+                                    new GameSpecificGUI(listingObject);
                                 }
                             });
                         }
