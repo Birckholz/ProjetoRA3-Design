@@ -4,10 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -244,15 +241,16 @@ public class AdmViewUser extends JFrame {
         public Object getCellEditorValue() {
             if (clicked) {
                 int confirm = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Confirmar Deletar", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
+                if (confirm == JOptionPane.YES_OPTION && selectedRow >= 0 && selectedRow < tableModel.getRowCount()) {
                     tableModel.removeRow(selectedRow);
                     writeTableDataToJson();
-                    }
                 }
+            }
                 clicked = false;
                 return new String(label);
             }
-            private void writeTableDataToJson() {
+        private void writeTableDataToJson() {
+            SwingUtilities.invokeLater(() -> {
                 JSONArray jsonArray = new JSONArray();
                 for (int i = 0; i < tableModel.getRowCount(); i++) {
                     JSONObject jsonObject = new JSONObject();
@@ -261,17 +259,23 @@ public class AdmViewUser extends JFrame {
                     jsonObject.put("username", tableModel.getValueAt(i, 2));
                     jsonObject.put("senha", tableModel.getValueAt(i, 3));
                     jsonObject.put("biblioteca", tableModel.getValueAt(i, 4));
-                    if (!(table.getValueAt(i, 5).equals("Nenhuma"))) {
+                    if (!tableModel.getValueAt(i, 5).equals("Nenhuma")) {
                         jsonObject.put("imagePath", tableModel.getValueAt(i, 5));
                     }
                     jsonArray.put(jsonObject);
                 }
+
                 try {
                     Files.write(Paths.get("src/usuarios.json"), jsonArray.toString().getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+                loadTableData();
+                TableColumn column = table.getColumn("Deletar");
+                column.setCellRenderer(new ButtonRenderer());
+                column.setCellEditor(new ButtonEditor(new JCheckBox()));
+            });
+        }
 
         public boolean stopCellEditing() {
             clicked = false;
