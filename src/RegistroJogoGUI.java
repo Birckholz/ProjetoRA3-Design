@@ -1,5 +1,6 @@
 package src;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import src.PerfilAdm;
 
@@ -10,9 +11,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class RegistroJogoGUI extends JFrame {
@@ -120,7 +123,7 @@ public class RegistroJogoGUI extends JFrame {
                     try {
                         Files.copy(selectedFile.toPath(), Path.of(destinationPath), StandardCopyOption.REPLACE_EXISTING);
                         Game temp = new Game(name, description, price, destinationPath);
-                        RegistroGAMEAction.registrarJogo(temp);
+                        registrarJogo(temp);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -136,6 +139,31 @@ public class RegistroJogoGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+        public static void registrarJogo(Game game) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("directory", game.getDirectory());
+            jsonObject.put("name", game.getName());
+            jsonObject.put("description", game.getDescricao());
+            jsonObject.put("aprice", game.getPrice());
 
+            String filePath = "src/games.json";
 
+            try {
+                String fileContent = new String(Files.readAllBytes(Paths.get(filePath)));
+                JSONArray jsonArray;
+                jsonArray = new JSONArray(fileContent);
+                jsonArray.put(jsonObject);
+
+                FileWriter escrever = new FileWriter(filePath);
+
+                escrever.write(jsonArray.toString());
+
+                escrever.close();
+
+                System.out.println("Data written to the JSON file successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
 }
