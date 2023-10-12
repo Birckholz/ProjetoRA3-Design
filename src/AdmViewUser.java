@@ -16,14 +16,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Vector;
 
-public class AdmViewJogos extends JFrame {
+public class AdmViewUser extends JFrame {
 
     private JSONObject session;
     private JTable table;
     private DefaultTableModel tableModel;
-    private JPanel panel; // Declare panel as an instance variable
 
-    public AdmViewJogos(JSONObject session) {
+    public AdmViewUser(JSONObject session) {
         this.session = session;
         if (!session.has("name")) {
             JOptionPane optionPane = new JOptionPane("Por favor realize login", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION);
@@ -57,11 +56,13 @@ public class AdmViewJogos extends JFrame {
                 setSize(1000, 700);
                 getContentPane().setBackground(Color.DARK_GRAY);
                 setLayout(new BorderLayout());
+
+                // Create a menu bar
                 JMenuBar menuBar = new JMenuBar();
 
                 // Create "Perfil" menu
                 JMenu perfilMenu = new JMenu("Perfil");
-                JMenu usuariosMenu = new JMenu("Usuarios");
+                JMenu jogosMenu = new JMenu("Jogos");
                 // Create "Ver Perfil" menu item
                 JMenuItem verPerfilMenuItem = new JMenuItem("Ver Perfil");
                 verPerfilMenuItem.addActionListener(new ActionListener() {
@@ -73,30 +74,23 @@ public class AdmViewJogos extends JFrame {
                 perfilMenu.add(verPerfilMenuItem);
 
                 // Create "Ver Usuários" menu item
-                JMenuItem verUsuariosMenuItem = new JMenuItem("Ver Usuários");
-                verUsuariosMenuItem.addActionListener(new ActionListener() {
+                JMenuItem verjogosMenuItem = new JMenuItem("Ver Jogos");
+                verjogosMenuItem.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        new AdmViewUser(session).setVisible(true);
+                        new AdmViewJogos(session).setVisible(true);
                         dispose();
                     }
                 });
-                JMenuItem registrarJogoMenuItem = new JMenuItem("Registrar Jogo");
-                registrarJogoMenuItem.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        new RegistroJogoGUI(session).setVisible(true);
-                    }
-                });
-                perfilMenu.add(registrarJogoMenuItem);
-                usuariosMenu.add(verUsuariosMenuItem);
+                jogosMenu.add(verjogosMenuItem);
 
                 // Add "Perfil" menu to the menu bar
                 menuBar.add(perfilMenu);
-                menuBar.add(usuariosMenu);
+                menuBar.add(jogosMenu);
                 // Set the menu bar
                 setJMenuBar(menuBar);
 
                 // Create a panel with GridBagLayout to hold the table and delete buttons
-                panel = new JPanel(new BorderLayout());
+                JPanel panel = new JPanel(new BorderLayout());
                 panel.setBackground(Color.DARK_GRAY);
 
                 // Create a table
@@ -137,20 +131,19 @@ public class AdmViewJogos extends JFrame {
     private void loadTableData() {
         // Read data from JSON file and populate the table
         try {
-            String jsonFileContent = new String(Files.readAllBytes(Paths.get("src/games.json")));
+            String jsonFileContent = new String(Files.readAllBytes(Paths.get("src/usuarios.json")));
             JSONArray jsonArray = new JSONArray(jsonFileContent);
 
             // Create table model with column names
             Vector<String> columnNames = new Vector<>();
             columnNames.add("Name");
-            columnNames.add("Description");
-            columnNames.add("Price");
-            columnNames.add("Directory")
+            columnNames.add("Email");
+            columnNames.add("Username");
             columnNames.add("Deletar");
             tableModel = new DefaultTableModel(columnNames, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return column != 0 && column != 1 && column != 2 && column != 3;
+                    return column != 0 && column != 1 && column != 2;
                 }
             };
 
@@ -158,10 +151,9 @@ public class AdmViewJogos extends JFrame {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("name");
-                String description = jsonObject.getString("description");
-                double price = jsonObject.getDouble("aprice");
-                String directory = jsonObject.getDouble("directory")
-                tableModel.addRow(new Object[]{name, description, price, directory, "Deletar"});
+                String email = jsonObject.getString("email");
+                String username = jsonObject.getString("username");
+                tableModel.addRow(new Object[]{name, email, username, "Deletar"});
             }
 
             // Set the table model
@@ -176,19 +168,13 @@ public class AdmViewJogos extends JFrame {
                     return cellComponent;
                 }
             });
+            JTableHeader header = table.getTableHeader();
+            header.setBackground(Color.DARK_GRAY);
+            header.setForeground(Color.WHITE);
 
-            // Set the background color of the table header
-            JTableHeader tableHeader = table.getTableHeader();
-            tableHeader.setBackground(Color.DARK_GRAY);
-            tableHeader.setForeground(Color.WHITE);
-
-            // Set the background color of the scroll pane
-            JScrollPane scrollPane = new JScrollPane(table);
-            scrollPane.setBackground(Color.DARK_GRAY);
+            // Set the scroll pane background color
+            JScrollPane scrollPane = (JScrollPane) table.getParent().getParent();
             scrollPane.getViewport().setBackground(Color.DARK_GRAY);
-
-            // Add the scroll pane to the panel
-            panel.add(scrollPane, BorderLayout.CENTER);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -246,35 +232,32 @@ public class AdmViewJogos extends JFrame {
         public Object getCellEditorValue() {
             if (clicked) {
                 // Perform deletar action
-                int confirm = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este jogo?", "Confirmar Deletar", JOptionPane.YES_NO_OPTION);
+                int confirm = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este usuário?", "Confirmar Deletar", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     // Delete the row from the table model
                     tableModel.removeRow(table.getSelectedRow());
-                    // Write the updated data back to the JSON file
                     writeTableDataToJson();
+                    }
+                }
+                clicked = false;
+                return new String(label);
+            }
+            private void writeTableDataToJson() {
+                // Write the updated data back to the JSON file
+                JSONArray jsonArray = new JSONArray();
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", tableModel.getValueAt(i, 0));
+                    jsonObject.put("description", tableModel.getValueAt(i, 1));
+                    jsonObject.put("price", tableModel.getValueAt(i, 2));
+                    jsonArray.put(jsonObject);
+                }
+                try {
+                    Files.write(Paths.get("src/games.json"), jsonArray.toString().getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            clicked = false;
-            return new String(label);
-        }
-
-        private void writeTableDataToJson() {
-            // Write the updated data back to the JSON file
-            JSONArray jsonArray = new JSONArray();
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("name", tableModel.getValueAt(i, 0));
-                jsonObject.put("description", tableModel.getValueAt(i, 1));
-                jsonObject.put("aprice", tableModel.getValueAt(i, 2));
-                jsonObject.put("directory", tableModel.getValueAt(i, 3))
-                jsonArray.put(jsonObject);
-            }
-            try {
-                Files.write(Paths.get("src/games.json"), jsonArray.toString().getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
         public boolean stopCellEditing() {
             clicked = false;
@@ -284,15 +267,5 @@ public class AdmViewJogos extends JFrame {
         protected void fireEditingStopped() {
             super.fireEditingStopped();
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                JSONObject session = new JSONObject();
-                session.put("name", "admin");
-                new AdmViewJogos(session);
-            }
-        });
     }
 }
