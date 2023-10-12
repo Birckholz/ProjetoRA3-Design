@@ -19,22 +19,17 @@ import java.awt.event.ActionListener;
 
                 optionPane.setOptions(new Object[] { customButton });
 
-                // Create a dialog with the option pane
                 JDialog dialog = optionPane.createDialog("No Session");
 
-                // Add an action listener to the custom button
                 customButton.addActionListener(e -> {
                     descartar();
                     dialog.dispose();
                 });
 
-                // Set the dialog to be modal
                 dialog.setModal(true);
 
-                // Set the dialog to be non-resizable
                 dialog.setResizable(false);
 
-                // Display the dialog
                 dialog.setVisible(true);
             }
 
@@ -45,18 +40,15 @@ import java.awt.event.ActionListener;
                     getContentPane().setBackground(Color.DARK_GRAY);
                     setLayout(new BorderLayout());
 
-                    // Create a panel with GridBagLayout to hold the image and name label
                     JPanel panel = new JPanel(new GridBagLayout());
                     panel.setBackground(Color.DARK_GRAY);
 
-                    // Create GridBagConstraints
                     GridBagConstraints gbc = new GridBagConstraints();
                     gbc.gridx = 0;
                     gbc.gridy = 0;
-                    gbc.insets = new Insets(10, 10, 0, 10); // top, left, bottom, right
+                    gbc.insets = new Insets(10, 10, 0, 10);
                     gbc.anchor = GridBagConstraints.CENTER;
 
-                    // Create a button with the image
                     ImageIcon imageIcon = new ImageIcon("image/img_2.png");
                     JButton imageButton = new JButton(imageIcon);
                     imageButton.setBorderPainted(false);
@@ -65,22 +57,17 @@ import java.awt.event.ActionListener;
                     imageButton.setOpaque(false);
                     panel.add(imageButton, gbc);
 
-                    // Update GridBagConstraints for the name label
                     gbc.gridy = 1;
-                    gbc.insets = new Insets(5, 10, 10, 10); // top, left, bottom, right
+                    gbc.insets = new Insets(5, 10, 10, 10);
                     gbc.anchor = GridBagConstraints.PAGE_START;
 
-                    // Create a label for the name
                     JLabel nomeLabel = new JLabel();
                     nomeLabel.setText(session.getString("name"));
                     nomeLabel.setForeground(Color.WHITE);
                     nomeLabel.setHorizontalAlignment(JLabel.CENTER);
                     panel.add(nomeLabel, gbc);
 
-                    // Add the panel to the center of the frame
                     add(panel, BorderLayout.CENTER);
-
-                    // Add action listener to the image button
                     imageButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -98,7 +85,6 @@ import java.awt.event.ActionListener;
                         public void actionPerformed(ActionEvent e) {
                             new AdmViewJogos(session).setVisible(true);
                             dispose();
-                            // Add your logic for "Ver Jogos" here
                         }
                     });
 
@@ -115,7 +101,6 @@ import java.awt.event.ActionListener;
                         public void actionPerformed(ActionEvent e) {
                             new AdmViewUser(session).setVisible(true);
                             dispose();
-                            // Add your logic for "Ver Usuários" here
                         }
                     });
 

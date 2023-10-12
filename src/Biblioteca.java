@@ -19,7 +19,7 @@ public class Biblioteca extends JFrame {
     private JPanel gamePanelContainer;
 
     public Biblioteca(JSONObject session) {
-        this.session = profileAction.findUser(session);
+        this.session = profileEditGUI.findUser(session);
         if (!session.has("name")) {
             JOptionPane optionPane = new JOptionPane("Por favor realize login", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION);
 

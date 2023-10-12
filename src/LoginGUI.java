@@ -21,11 +21,10 @@ public class LoginGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY); // Set the background color of the main panel
+        panel.setBackground(Color.LIGHT_GRAY);
 
         JPanel topPanel = new JPanel(new BorderLayout());
 
-        // Create a custom panel for the profile picture
         JPanel profilePanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -40,7 +39,6 @@ public class LoginGUI extends JFrame {
                 g2d.setColor(Color.LIGHT_GRAY);
                 g2d.fillOval(x, y, size, size);
 
-                // Draw the profile picture
                 ImageIcon profileImage = new ImageIcon("image/Logo.png");
                 Image img = profileImage.getImage();
                 g2d.drawImage(img, x, y, size, size, this);
@@ -48,8 +46,8 @@ public class LoginGUI extends JFrame {
                 g2d.dispose();
             }
         };
-        profilePanel.setPreferredSize(new Dimension(150, 106)); // Set the preferred size of the profile panel
-        profilePanel.setBackground(Color.LIGHT_GRAY); // Set the background color of the profile panel
+        profilePanel.setPreferredSize(new Dimension(150, 106));
+        profilePanel.setBackground(Color.LIGHT_GRAY);
 
         topPanel.add(profilePanel, BorderLayout.CENTER);
 

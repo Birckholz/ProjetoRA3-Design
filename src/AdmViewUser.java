@@ -28,22 +28,17 @@ public class AdmViewUser extends JFrame {
 
             optionPane.setOptions(new Object[]{customButton});
 
-            // Create a dialog with the option pane
             JDialog dialog = optionPane.createDialog("No Session");
 
-            // Add an action listener to the custom button
             customButton.addActionListener(e -> {
                 descartar();
                 dialog.dispose();
             });
 
-            // Set the dialog to be modal
             dialog.setModal(true);
 
-            // Set the dialog to be non-resizable
             dialog.setResizable(false);
 
-            // Display the dialog
             dialog.setVisible(true);
         }
 
@@ -54,13 +49,10 @@ public class AdmViewUser extends JFrame {
                 getContentPane().setBackground(Color.DARK_GRAY);
                 setLayout(new BorderLayout());
 
-                // Create a menu bar
                 JMenuBar menuBar = new JMenuBar();
 
-                // Create "Perfil" menu
                 JMenu perfilMenu = new JMenu("Perfil");
                 JMenu jogosMenu = new JMenu("Jogos");
-                // Create "Ver Perfil" menu item
                 JMenuItem verPerfilMenuItem = new JMenuItem("Ver Perfil");
                 verPerfilMenuItem.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -70,7 +62,6 @@ public class AdmViewUser extends JFrame {
                 });
                 perfilMenu.add(verPerfilMenuItem);
 
-                // Create "Ver Usuários" menu item
                 JMenuItem verjogosMenuItem = new JMenuItem("Ver Jogos");
                 verjogosMenuItem.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -80,37 +71,28 @@ public class AdmViewUser extends JFrame {
                 });
                 jogosMenu.add(verjogosMenuItem);
 
-                // Add "Perfil" menu to the menu bar
                 menuBar.add(perfilMenu);
                 menuBar.add(jogosMenu);
-                // Set the menu bar
                 setJMenuBar(menuBar);
 
-                // Create a panel with GridBagLayout to hold the table and delete buttons
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.setBackground(Color.DARK_GRAY);
 
-                // Create a table
                 table = new JTable();
                 table.setBackground(Color.DARK_GRAY);
                 table.setForeground(Color.WHITE);
                 JScrollPane scrollPane = new JScrollPane(table);
                 panel.add(scrollPane, BorderLayout.CENTER);
 
-                // Create a button panel to hold the delete buttons
                 JPanel buttonPanel = new JPanel(new GridLayout(0, 1));
                 buttonPanel.setBackground(Color.DARK_GRAY);
 
-                // Add the button panel to the west of the panel
                 panel.add(buttonPanel, BorderLayout.WEST);
 
-                // Add the panel to the center of the frame
                 add(panel, BorderLayout.CENTER);
 
-                // Load data from JSON file
                 loadTableData();
 
-                // Add action listener to the delete buttons
                 table.getColumn("Deletar").setCellRenderer((TableCellRenderer) new ButtonRenderer());
                 table.getColumn("Deletar").setCellEditor(new ButtonEditor(new JCheckBox()));
 
@@ -126,12 +108,10 @@ public class AdmViewUser extends JFrame {
     }
 
     private void loadTableData() {
-        // Read data from JSON file and populate the table
         try {
             String jsonFileContent = new String(Files.readAllBytes(Paths.get("src/usuarios.json")));
             JSONArray jsonArray = new JSONArray(jsonFileContent);
 
-            // Create table model with column names
             Vector<String> columnNames = new Vector<>();
             columnNames.add("Name");
             columnNames.add("Email");
@@ -147,7 +127,6 @@ public class AdmViewUser extends JFrame {
                 }
             };
 
-            // Populate table model with data
             for (int i = 0; i < jsonArray.length(); i++) {
                 String imagePath = "";
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -164,10 +143,8 @@ public class AdmViewUser extends JFrame {
                 tableModel.addRow(new Object[]{name, email, username, senha, biblioteca, imagePath, "Deletar"});
             }
 
-            // Set the table model
             table.setModel(tableModel);
 
-            // Set the cell renderer for the table cells
             table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
                 public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                     Component cellComponent = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -180,7 +157,6 @@ public class AdmViewUser extends JFrame {
             header.setBackground(Color.DARK_GRAY);
             header.setForeground(Color.WHITE);
 
-            // Set the scroll pane background color
             JScrollPane scrollPane = (JScrollPane) table.getParent().getParent();
             scrollPane.getViewport().setBackground(Color.DARK_GRAY);
         } catch (IOException e) {

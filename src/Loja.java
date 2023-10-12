@@ -50,10 +50,8 @@ public class Loja extends JFrame {
                 setSize(1000, 700);
                 getContentPane().setBackground(Color.DARK_GRAY);
 
-                // Create a top-level JPanel to hold the menu bar and game panels
                 JPanel contentPanel = new JPanel(new BorderLayout());
 
-                // Create the menu bar
                 JMenuBar barraMenu = new JMenuBar();
                 JMenu menuBiblioteca = new JMenu("Biblioteca");
                 JMenu menuLista = new JMenu("Lista de Desejos");
@@ -87,7 +85,7 @@ public class Loja extends JFrame {
                 contentPanel.add(BorderLayout.NORTH, barraMenu);
 
                 gamePanelContainer = new JPanel(new GridLayout(0, 3, 10, 10));
-                gamePanelContainer.setBackground(Color.DARK_GRAY); // Set background color to dark gray
+                gamePanelContainer.setBackground(Color.DARK_GRAY);
 
                 JScrollPane scrollPane = new JScrollPane(gamePanelContainer);
                 scrollPane.setBackground(Color.DARK_GRAY);
@@ -133,7 +131,7 @@ public class Loja extends JFrame {
 
                 JPanel gamePanel = new JPanel();
                 gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
-                gamePanel.setBackground(Color.DARK_GRAY); // Set background color to dark gray
+                gamePanel.setBackground(Color.DARK_GRAY);
 
                 JLabel imageLabel = new JLabel();
                 imageLabel.setIcon(scaledImageIcon);
@@ -141,10 +139,10 @@ public class Loja extends JFrame {
 
                 JPanel nameButtonPanel = new JPanel();
                 nameButtonPanel.setLayout(new BoxLayout(nameButtonPanel, BoxLayout.Y_AXIS));
-                nameButtonPanel.setBackground(Color.DARK_GRAY); // Set background color to dark gray
+                nameButtonPanel.setBackground(Color.DARK_GRAY);
                 JLabel nameLabel = new JLabel(name);
                 nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                nameLabel.setForeground(Color.WHITE); // Set text color to white
+                nameLabel.setForeground(Color.WHITE);
                 nameButtonPanel.add(nameLabel);
 
                 JButton pagarButton = new JButton("Comprar");
@@ -169,7 +167,7 @@ public class Loja extends JFrame {
                                         if (name.equals(jsonObject.getString("name"))) {
                                             System.out.println(jsonObject);
                                             Game gameComprar = new Game(jsonObject.getString("name"), jsonObject.getString("description"), jsonObject.getDouble("aprice"), jsonObject.getString("directory"));
-                                            if (profileAction.checkGame(session, name)) {
+                                            if (profileEditGUI.checkGame(session, name)) {
                                                 showErrorPopup("Jogo Já Comprado", "Fechar");
                                                 return;
                                             }
@@ -190,7 +188,6 @@ public class Loja extends JFrame {
                 });
             }
 
-            // Update the content pane layout after adding all game panels
             getContentPane().revalidate();
             getContentPane().repaint();
 

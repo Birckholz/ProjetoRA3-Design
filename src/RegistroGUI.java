@@ -109,11 +109,9 @@ public class RegistroGUI extends JFrame {
         loginLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Ação a ser executada quando o link for clicado
-                // Criar uma nova instância da classe de interface desejada e torná-la visível
                 LoginGUI loginGUI = new LoginGUI();
                 loginGUI.setVisible(true);
-                dispose(); // Fecha a janela atual (RegistroGUI)
+                dispose();
 
             }
         });
@@ -125,7 +123,7 @@ public class RegistroGUI extends JFrame {
                 temp.registrarUsuario(temp);
                 LoginGUI loginGUI = new LoginGUI();
                 loginGUI.setVisible(true);
-                dispose(); // Fecha a janela atual (RegistroGUI)
+                dispose();
             }
         });
 

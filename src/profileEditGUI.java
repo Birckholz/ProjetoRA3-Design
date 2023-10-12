@@ -36,7 +36,6 @@ public class profileEditGUI extends JFrame {
         this.session = session;
         try {
             if (session.has("name")) {
-                // Create and configure components
                 nameField = new JTextField(20);
                 emailField = new JTextField(20);
                 senhaField = new JTextField(20);
@@ -53,7 +52,6 @@ public class profileEditGUI extends JFrame {
                         if (result == JFileChooser.APPROVE_OPTION) {
                             File selectedFile = fileChooser.getSelectedFile();
                             selectedFilePath = selectedFile.getAbsolutePath();
-                            // Perform logic to handle the selected file
                         }
                     }
                 });
@@ -91,17 +89,14 @@ public class profileEditGUI extends JFrame {
                 goBackButton.setBackground(Color.DARK_GRAY);
                 goBackButton.setForeground(Color.BLACK);
 
-                // Configure layout
                 setLayout(new GridBagLayout());
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 setSize(400, 350);
                 getContentPane().setBackground(Color.DARK_GRAY);
 
-                // Create GridBagConstraints to manage the component placement
                 GridBagConstraints gbc = new GridBagConstraints();
-                gbc.insets = new Insets(10, 10, 10, 10); // Add padding around the components
+                gbc.insets = new Insets(10, 10, 10, 10);
 
-                // Add components to the frame
                 gbc.gridx = 0;
                 gbc.gridy = 0;
                 add(nameLabel, gbc);
@@ -141,14 +136,13 @@ public class profileEditGUI extends JFrame {
                 gbc.gridy = 5;
                 gbc.gridwidth = 2;
                 gbc.anchor = GridBagConstraints.CENTER;
-                gbc.insets = new Insets(20, 0, 0, 0); // Add vertical spacing between components
+                gbc.insets = new Insets(20, 0, 0, 0);
                 add(saveButton, gbc);
 
                 gbc.gridy = 6;
-                gbc.insets = new Insets(10, 0, 0, 0); // Add vertical spacing between components
+                gbc.insets = new Insets(10, 0, 0, 0);
                 add(goBackButton, gbc);
 
-                // Set foreground color to black for all labels and text fields
                 Color blackColor = Color.BLACK;
                 nameLabel.setForeground(blackColor);
                 emailLabel.setForeground(blackColor);
@@ -199,37 +193,35 @@ public class profileEditGUI extends JFrame {
 
                 if (temp.getUsername().equals(jsonObject.getString("username"))) {
                     if (!name.equals(session.getString("name"))) {
-                        profileAction.editarNome(temp, name);
+                        editarNome(temp, name);
                         jsonObject.put("name", temp.getName());
                         session.put("name", temp.getName());
                     }
                     if (!senha.equals(session.getString("senha"))) {
-                        profileAction.editarSenha(temp, senha);
+                        editarSenha(temp, senha);
                         jsonObject.put("senha", temp.getPassword());
                         session.put("senha", temp.getPassword());
                     }
                     if (!email.equals(session.getString("email"))) {
-                        profileAction.editarEmail(temp, email);
+                        editarEmail(temp, email);
                         jsonObject.put("email", temp.getEmail());
                         session.put("email", temp.getEmail());
                     }
                     if (selectedFilePath != null && !selectedFilePath.equals(session.getString("imagePath"))) {
-                        String destinationPath = "image/" + temp.getUsername() + ".jpg"; // Specify the path for saving the image
+                        String destinationPath = "image/" + temp.getUsername() + ".jpg";
 
-                        // Delete existing file if it exists
                         Path existingFilePath = Paths.get(destinationPath);
                         if (Files.exists(existingFilePath)) {
                             Files.delete(existingFilePath);
                         }
 
                         try {
-                            // Copy the selected file to the destination path
                             Files.copy(Paths.get(selectedFilePath), Paths.get(destinationPath));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
 
-                        profileAction.setProfilePic(temp, destinationPath);
+                        setProfilePic(temp, destinationPath);
                         jsonObject.put("imagePath", destinationPath);
                         session.put("imagePath", destinationPath);
                     }
@@ -248,6 +240,68 @@ public class profileEditGUI extends JFrame {
 
     public void descartar() {
         dispose();
+    }
+
+    public static void editarNome(Usuario user, String newName) {
+        user.setName(newName);
+    }
+
+    ;
+
+    public static void editarUsername(Usuario user, String newUsername) {
+        user.setUsername(newUsername);
+    }
+
+    ;
+
+    public static void editarEmail(Usuario user, String newEmail) {
+        user.setEmail(newEmail);
+    }
+
+    ;
+
+    public static void editarSenha(Usuario user, String newPasscode) {
+        user.setPassword(newPasscode);
+    }
+
+    ;
+
+    public static void setProfilePic(Usuario user, String pic) {
+        user.setProfilePic(pic);
+    }
+
+    public static JSONObject findUser(JSONObject session) {
+        String username = session.getString("username");
+        String email = session.getString("email");
+        try {
+            String fileContent = new String(Files.readAllBytes(Paths.get("src/usuarios.json")));
+            JSONArray jsonArray;
+            jsonArray = new JSONArray(fileContent);
+            for (Object item : jsonArray) {
+                if (item instanceof JSONObject) {
+                    JSONObject jsonObject = (JSONObject) item;
+
+                    if (username.equals(jsonObject.getString("username")) || email.equals(jsonObject.getString("email"))) {
+                        return jsonObject;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+    public static boolean checkGame(JSONObject session, String name){
+        JSONObject user = findUser(session);
+        JSONArray biblioteca = user.getJSONArray("biblioteca");
+        for (Object elemento : biblioteca) {
+            String nameGame = (String) elemento;
+            if (name.equals(nameGame)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
