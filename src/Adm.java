@@ -10,11 +10,14 @@ import java.nio.file.Paths;
 
 public class Adm extends UserBase{
     private final boolean admin;
+    private String username;
 
-    public Adm(boolean admin, String name, String email, String senha){
+    public Adm(boolean admin, String name, String email, String senha, String username){
         super(name, email, senha);
         this.admin = admin;
+        this.username = username;
     }
+        @Override
         public void registrarUsuario(Usuario user) {
             JSONArray biblioteca = new JSONArray();
             JSONObject jsonObject = new JSONObject();
