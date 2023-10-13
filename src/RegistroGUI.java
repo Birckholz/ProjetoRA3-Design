@@ -14,12 +14,13 @@ import java.awt.event.MouseEvent;
 
 
 public class RegistroGUI extends JFrame {
+    private static RegistroGUI instance;
     private JTextField nameField;
     private JTextField emailField;
     private JTextField nicknameField;
     private JPasswordField passwordField;
 
-    public RegistroGUI() {
+    private RegistroGUI() {
         setTitle("Registro");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -139,9 +140,15 @@ public class RegistroGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new RegistroGUI());
+    public static synchronized RegistroGUI getInstance() {
+        if (instance == null) {
+            instance = new RegistroGUI();
+        }
+        return instance;
     }
+
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> new RegistroGUI());
+//    }
 
 }

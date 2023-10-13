@@ -2,7 +2,7 @@ package src;
 
 public class main {
     public static void main(String[] args) {
-        RegistroGUI janelaPrincipal = new RegistroGUI();
+        RegistroGUI registroGUI = RegistroGUI.getInstance();
 
     }
 }
