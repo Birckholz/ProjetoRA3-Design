@@ -119,11 +119,12 @@ public class AdmViewUser extends JFrame {
             columnNames.add("Senha");
             columnNames.add("Biblioteca");
             columnNames.add("imagePath");
+            columnNames.add("MementoId");
             columnNames.add("Deletar");
             tableModel = new DefaultTableModel(columnNames, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return column == 6;
+                    return column == 7;
                 }
             };
 
@@ -140,7 +141,8 @@ public class AdmViewUser extends JFrame {
                 } else {
                     imagePath = "Nenhuma";
                 }
-                tableModel.addRow(new Object[]{name, email, username, senha, biblioteca, imagePath, "Deletar"});
+                int mementoId = jsonObject.getInt("mementoId");
+                tableModel.addRow(new Object[]{name, email, username, senha, biblioteca, imagePath, mementoId, "Deletar"});
             }
 
             table.setModel(tableModel);
@@ -238,6 +240,7 @@ public class AdmViewUser extends JFrame {
                     if (!tableModel.getValueAt(i, 5).equals("Nenhuma")) {
                         jsonObject.put("imagePath", tableModel.getValueAt(i, 5));
                     }
+                    jsonObject.put("mementoId", tableModel.getValueAt(i, 6));
                     jsonArray.put(jsonObject);
                 }
 

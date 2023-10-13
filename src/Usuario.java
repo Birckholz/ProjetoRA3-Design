@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Usuario extends UserBase{
+    private int mementoId;
     private String name;
     private String username;
     private String email;
@@ -17,13 +18,26 @@ public class Usuario extends UserBase{
     private JSONArray biblioteca;
     private String profilePic;
 
-    public Usuario(String email, String password, String name, String username){
+    public Usuario(String email, String password, String name, String username) {
         super(name,email, password);
+        int newMementoId = 0;
         this.name = name;
         this.email = email;
         this.password = password;
         this.username = username;
         this.profilePic = profilePic;
+        try {
+            String fileContent = new String(Files.readAllBytes(Paths.get("src/usuarios.json")));
+            JSONArray userList = new JSONArray(fileContent);
+            if (!userList.isEmpty()) {
+                JSONObject last = userList.getJSONObject(userList.length() - 1);
+                newMementoId = last.getInt("mementoId") + 1;
+            }
+        } catch (IOException p) {
+            p.printStackTrace();
+        }
+        this.mementoId = newMementoId;
+
     }
 
     public String getUsername() {
@@ -69,6 +83,11 @@ public class Usuario extends UserBase{
     public JSONArray getBiblioteca() {
         return biblioteca;
     }
+
+    public int getMementoId() {
+        return this.mementoId;
+    }
+
     @Override
     public void registrarUsuario(Usuario user) {
             JSONArray biblioteca = new JSONArray();
@@ -78,6 +97,7 @@ public class Usuario extends UserBase{
             jsonObject.put("senha", user.getPassword());
             jsonObject.put("username", user.getUsername());
             jsonObject.put("biblioteca", biblioteca);
+            jsonObject.put("mementoId", user.getMementoId());
             jsonObject.put("imagePath", "");
 
             String filePath = "src/usuarios.json";

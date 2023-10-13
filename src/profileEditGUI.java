@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,6 +68,16 @@ public class profileEditGUI extends JFrame {
                     }
                 });
 
+                JButton undoButton = new JButton("Desfazer");
+                undoButton.setBackground(Color.DARK_GRAY);
+                undoButton.setForeground(Color.BLACK);
+                undoButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        System.out.println("Clicka");
+                        undoPreviousChange(session.getInt("mementoId"));
+                    }
+                });
+
                 saveButton.setBackground(Color.DARK_GRAY);
                 saveButton.setForeground(Color.BLACK);
 
@@ -91,7 +100,7 @@ public class profileEditGUI extends JFrame {
 
                 setLayout(new GridBagLayout());
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                setSize(400, 350);
+                setSize(500, 500);
                 getContentPane().setBackground(Color.DARK_GRAY);
 
                 GridBagConstraints gbc = new GridBagConstraints();
@@ -133,15 +142,18 @@ public class profileEditGUI extends JFrame {
                 add(selectFileButton, gbc);
 
                 gbc.gridx = 0;
-                gbc.gridy = 5;
-                gbc.gridwidth = 2;
-                gbc.anchor = GridBagConstraints.CENTER;
-                gbc.insets = new Insets(20, 0, 0, 0);
-                add(saveButton, gbc);
-
                 gbc.gridy = 6;
                 gbc.insets = new Insets(10, 0, 0, 0);
                 add(goBackButton, gbc);
+
+                gbc.gridx = 1;
+                gbc.gridy = 6;
+                gbc.insets = new Insets(10, 10, 0, 0);
+                add(saveButton, gbc);
+
+                gbc.gridx = 2;
+                gbc.insets = new Insets(10, 10, 0, 0);
+                add(undoButton, gbc);
 
                 Color blackColor = Color.BLACK;
                 nameLabel.setForeground(blackColor);
@@ -188,10 +200,12 @@ public class profileEditGUI extends JFrame {
             String fileContent = new String(Files.readAllBytes(Paths.get("src/usuarios.json")));
             JSONArray jsonArray = new JSONArray(fileContent);
 
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                 if (temp.getUsername().equals(jsonObject.getString("username"))) {
+                    findUserAndUpdate(session.getInt("mementoId"), session);
                     if (!name.equals(session.getString("name"))) {
                         editarNome(temp, name);
                         jsonObject.put("name", temp.getName());
@@ -292,6 +306,86 @@ public class profileEditGUI extends JFrame {
         }
         return null;
     }
+    public void undoPreviousChange(int targetMementoId) {
+        try {
+            String fileContentUser = new String(Files.readAllBytes(Paths.get("src/usuarios.json")));
+            String fileContentMemento = new String(Files.readAllBytes(Paths.get("src/usuarioMemento.json")));
+            JSONArray userListMemento = new JSONArray(fileContentMemento);
+            JSONArray userListUser = new JSONArray(fileContentUser);
+            JSONObject temp = null;
+            int currentMementoId = 0;
+            for (int i = 0; i < userListMemento.length(); i++) {
+                JSONObject userMemento = userListMemento.getJSONObject(i);
+                int mementoId = userMemento.getInt("mementoId");
+                currentMementoId = i;
+                if (mementoId == targetMementoId) {
+                    for (int j = 0; j < userListUser.length(); j++) {
+                        JSONObject user = userListUser.getJSONObject(j);
+                        temp = new JSONObject(user.toString());;
+                        int mementoIdNew = user.getInt("mementoId");
+                        if (mementoIdNew == targetMementoId) {
+                            user.put("name", userMemento.getString("name"));
+                            user.put("senha", userMemento.getString("senha"));
+                            user.put("biblioteca", userMemento.getJSONArray("biblioteca"));
+                            user.put("imagePath", userMemento.getString("imagePath"));
+                            user.put("mementoId", userMemento.getInt("mementoId"));
+                            user.put("username", userMemento.getString("username"));
+                            user.put("email", userMemento.getString("email"));
+                            userListMemento.put(i, new JSONObject(temp.toString()));
+                            String updatedDataM = userListMemento.toString(4);
+                            Files.write(Paths.get("src/usuarioMemento.json"), updatedDataM.getBytes());
+                            String updatedData = userListUser.toString(4);
+                            Files.write(Paths.get("src/usuarios.json"), updatedData.getBytes());
+                            updateSession(user);
+                            updateFieldPlaceholders();
+
+                            break;
+                        }
+                    }
+                }
+            }
+//            findUserAndUpdate(targetMementoId, temp);
+//            userListMemento.remove(currentMementoId);
+//            String updateDataM = userListMemento.toString(4);
+//            Files.write(Paths.get("src/usuarioMemento.json"), updateDataM.getBytes());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void findUserAndUpdate(int targetMementoId, JSONObject Atual) {
+        try {
+            String fileContent = new String(Files.readAllBytes(Paths.get("src/usuarioMemento.json")));
+            JSONArray userList = new JSONArray(fileContent);
+
+            boolean userFound = false;
+            for (int i = 0; i < userList.length(); i++) {
+                JSONObject user = userList.getJSONObject(i);
+                int mementoId = user.getInt("mementoId");
+                if (mementoId == targetMementoId) {
+                    user.put("name", Atual.getString("name"));
+                    user.put("senha", Atual.getString("senha"));
+                    user.put("biblioteca", Atual.getJSONArray("biblioteca"));
+                    user.put("imagePath", Atual.getString("imagePath"));
+                    user.put("mementoId", Atual.getInt("mementoId"));
+                    user.put("username", Atual.getString("username"));
+                    user.put("email", Atual.getString("email"));
+                    String updatedData = userList.toString(4);
+                    userFound = true;
+                    Files.write(Paths.get("src/usuarioMemento.json"), updatedData.getBytes());
+                    break;
+                }
+            }
+            if (!userFound) {
+                userList.put(Atual);
+                String updatedData = userList.toString(4);
+                Files.write(Paths.get("src/usuarioMemento.json"), updatedData.getBytes());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static boolean checkGame(JSONObject session, String name){
         JSONObject user = findUser(session);
         JSONArray biblioteca = user.getJSONArray("biblioteca");
@@ -304,6 +398,22 @@ public class profileEditGUI extends JFrame {
         return false;
     }
 
+    public void updateFieldPlaceholders() {
+        nameField.setText(session.getString("name"));
+        senhaField.setText(session.getString("senha"));
+        usernameField.setText(session.getString("username"));
+        emailField.setText(session.getString("email"));
+    }
+
+    public void updateSession(JSONObject temp) {
+        session.put("name", temp.getString("name"));
+        session.put("username", temp.getString("username"));
+        session.put("senha", temp.getString("senha"));
+        session.put("mementoId", temp.getInt("mementoId"));
+        session.put("imagePath", temp.getString("imagePath"));
+        session.put("email", temp.getString("email"));
+        session.put("biblioteca", temp.getJSONArray("biblioteca"));
+    }
     public static void main(String[] args) {
         JSONObject session = new JSONObject();
         new profileEditGUI(session);
