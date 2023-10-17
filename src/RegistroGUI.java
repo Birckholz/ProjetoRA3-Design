@@ -121,7 +121,7 @@ public class RegistroGUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 UserFactory Factory = new UsuarioFactory();
-                UserBase temp1 = Factory.createUser(emailField.getText(), passwordField.getText(), nameField.getText(), nicknameField.getText());
+                UserBase temp1 = Factory.createUser(nameField.getText(), emailField.getText(), passwordField.getText(), nicknameField.getText());
                 Usuario temp = (Usuario) temp1 ;
                 temp.registrarUsuario(temp);
                 LoginGUI loginGUI = new LoginGUI();
