@@ -159,7 +159,7 @@ public class AdmViewJogos extends JFrame {
             tableHeader.setBackground(Color.DARK_GRAY);
             tableHeader.setForeground(Color.WHITE);
 
-            JScrollPane scrollPane = new JScrollPane(table);
+            JScrollPane scrollPane = (JScrollPane) table.getParent().getParent();
             scrollPane.setBackground(Color.DARK_GRAY);
             scrollPane.getViewport().setBackground(Color.DARK_GRAY);
 
@@ -192,6 +192,7 @@ public class AdmViewJogos extends JFrame {
         private JButton button;
         private String label;
         private boolean clicked;
+        private int selectedRow;
 
         public ButtonEditor(JCheckBox checkBox) {
             super(checkBox);
@@ -215,14 +216,15 @@ public class AdmViewJogos extends JFrame {
             label = (value == null) ? "" : value.toString();
             button.setText(label);
             clicked = true;
+            selectedRow = row;
             return button;
         }
 
         public Object getCellEditorValue() {
             if (clicked) {
                 int confirm = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja deletar este jogo?", "Confirmar Deletar", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    tableModel.removeRow(table.getSelectedRow());
+                if (confirm == JOptionPane.YES_OPTION && selectedRow >= 0 && selectedRow < tableModel.getRowCount()) {
+                    tableModel.removeRow(selectedRow);
                     writeTableDataToJson();
                 }
             }
@@ -231,20 +233,22 @@ public class AdmViewJogos extends JFrame {
         }
 
         private void writeTableDataToJson() {
-            JSONArray jsonArray = new JSONArray();
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("name", tableModel.getValueAt(i, 0));
-                jsonObject.put("description", tableModel.getValueAt(i, 1));
-                jsonObject.put("aprice", tableModel.getValueAt(i, 2));
-                jsonObject.put("directory", tableModel.getValueAt(i, 3));
-                jsonArray.put(jsonObject);
-            }
-            try {
-                Files.write(Paths.get("src/games.json"), jsonArray.toString(2).getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            SwingUtilities.invokeLater(() -> {
+                JSONArray jsonArray = new JSONArray();
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", tableModel.getValueAt(i, 0));
+                    jsonObject.put("description", tableModel.getValueAt(i, 1));
+                    jsonObject.put("aprice", tableModel.getValueAt(i, 2));
+                    jsonObject.put("directory", tableModel.getValueAt(i, 3));
+                    jsonArray.put(jsonObject);
+                }
+                try {
+                    Files.write(Paths.get("src/games.json"), jsonArray.toString(2).getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         public boolean stopCellEditing() {
